@@ -181,6 +181,8 @@ export default function CatalogGrid({
 
     useEffect(() => {
         const handleScroll = () => {
+            if (typeof window === 'undefined') return;
+
             // Only on mobile
             if (window.innerWidth >= 768) {
                 setActiveIndex(null);
@@ -207,262 +209,182 @@ export default function CatalogGrid({
             setActiveIndex(closestIndex);
         };
 
-        window.addEventListener('scroll', handleScroll);
-        window.addEventListener('resize', handleScroll);
-        handleScroll(); // Initial check
+        if (typeof window !== 'undefined') {
+            window.addEventListener('scroll', handleScroll);
+            window.addEventListener('resize', handleScroll);
+            handleScroll(); // Initial check
+        }
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleScroll);
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('resize', handleScroll);
+            }
         };
     }, [filteredMotorcycles]);
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-start">
             {/* Sidebar Filters - Desktop Sticky / Mobile Collapsible */}
-            <aside className="w-full lg:w-[320px] lg:sticky lg:top-24 flex-shrink-0">
+            <aside className="w-full lg:w-[280px] lg:sticky lg:top-24 flex-shrink-0">
 
-                {/* Mobile Toggle Button - Redesigned */}
+                {/* Mobile Toggle Button */}
                 <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className={`lg:hidden w-full relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-950 border transition-all duration-300 group ${showFilters
-                            ? `border-${themeColor}-500/50 mb-6`
-                            : `border-white/10 mb-4 hover:border-white/20`
-                        }`}
+                    className={`lg:hidden w-full py-4 border-b border-neutral-900 flex items-center justify-between text-white transition-colors group ${showFilters ? 'mb-6' : 'mb-2'}`}
                 >
-                    {/* Gradient accent line */}
-                    <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-${themeColor}-500 to-transparent opacity-${showFilters ? '100' : '0'} transition-opacity duration-300`} />
-
-                    <div className="flex items-center justify-between p-5">
-                        <div className="flex items-center gap-3">
-                            <div className={`p-2.5 rounded-xl bg-neutral-800/50 border border-white/5 transition-all duration-300 ${showFilters ? getThemeColorClass('bg') + ' border-transparent' : 'group-hover:border-white/10'}`}>
-                                <Search className={`w-5 h-5 transition-colors duration-300 ${showFilters ? 'text-black' : getThemeColorClass('text')}`} />
-                            </div>
-                            <div>
-                                <span className="block text-sm font-bold text-white tracking-tight">
-                                    {showFilters ? "Nascondi Filtri" : "Cerca la tua moto"}
-                                </span>
-                                <span className="text-xs text-neutral-500 font-medium">
-                                    {showFilters ? "Chiudi ricerca" : "Apri ricerca e filtri"}
-                                </span>
-                            </div>
-                        </div>
-                        <SlidersHorizontal className={`w-5 h-5 ${getThemeColorClass('text')} transition-transform duration-300 ${showFilters ? 'rotate-90' : ''}`} />
-                    </div>
+                    <span className="text-sm font-black uppercase tracking-tight text-neutral-400 group-hover:text-white transition-colors">
+                        {showFilters ? "Nascondi Filtri" : "Cerca la tua moto"}
+                    </span>
+                    <SlidersHorizontal className={`w-5 h-5 ${getThemeColorClass('text')} transition-transform ${showFilters ? 'rotate-90' : ''}`} />
                 </button>
 
                 {/* Filters Container */}
-                <AnimatePresence>
-                    {(showFilters || window.innerWidth >= 1024) && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3 }}
-                            className="space-y-5"
-                        >
+                <div className={`${showFilters ? 'block' : 'hidden'} lg:block space-y-4`}>
 
-                            {/* Search Bar - Completely Redesigned */}
-                            <div className="relative group">
-                                {/* Gradient border container */}
-                                <div className="absolute -inset-[1px] bg-gradient-to-r from-neutral-800 via-white/10 to-neutral-800 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+                    {/* Search Bar - Clean Design */}
+                    <div className="relative group">
+                        <div className="relative flex items-center bg-[#0f0f0f] border border-white/10 rounded-2xl p-1 transition-all duration-300 group-focus-within:border-neutral-700">
+                            <div className="p-3 bg-neutral-900 rounded-xl text-neutral-400 group-focus-within:text-white transition-colors">
+                                <Search className="w-5 h-5" />
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Cerca moto..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-transparent text-white px-3 py-2 focus:outline-none placeholder:text-neutral-600 font-medium"
+                            />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery("")}
+                                    className="p-2 text-neutral-600 hover:text-white transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
-                                <div className="relative flex items-center bg-gradient-to-br from-neutral-900 to-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 group-focus-within:border-transparent transition-all duration-300">
-                                    {/* Icon Container */}
-                                    <div className={`flex items-center justify-center w-14 h-14 transition-all duration-300 ${searchQuery ? getThemeColorClass('text') : 'text-neutral-500 group-focus-within:text-white'}`}>
-                                        <Search className="w-5 h-5" />
-                                    </div>
+                    {/* Filter Sections */}
+                    <div className="bg-[#0f0f0f] border border-white/5 rounded-3xl p-6 space-y-8 shadow-2xl">
 
-                                    {/* Input */}
-                                    <input
-                                        type="text"
-                                        placeholder="Cerca moto..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="flex-1 bg-transparent text-white py-4 pr-4 focus:outline-none placeholder:text-neutral-600 font-medium tracking-tight"
-                                    />
+                        {/* Header with Reset */}
+                        <div className="flex justify-between items-center pb-4 border-b border-white/5">
+                            <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                                <SlidersHorizontal className={`w-4 h-4 ${getThemeColorClass('text')}`} />
+                                Filtri
+                            </h3>
+                            {(
+                                filters.yearRange[0] !== bounds.year.min || filters.yearRange[1] !== bounds.year.max ||
+                                filters.priceRange[0] !== bounds.price.min || filters.priceRange[1] !== bounds.price.max ||
+                                filters.displacementRange[0] !== bounds.displacement.min || filters.displacementRange[1] !== bounds.displacement.max ||
+                                filters.selectedBrands.length > 0
+                            ) && (
+                                    <button
+                                        onClick={clearFilters}
+                                        className={`text-[10px] font-bold text-neutral-500 ${getThemeColorClass('hover-text')} uppercase tracking-wider transition-colors flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md hover:bg-white/10`}
+                                    >
+                                        <X className="w-3 h-3" /> Reset
+                                    </button>
+                                )}
+                        </div>
 
-                                    {/* Clear Button */}
-                                    {searchQuery && (
-                                        <motion.button
-                                            initial={{ scale: 0, opacity: 0 }}
-                                            animate={{ scale: 1, opacity: 1 }}
-                                            exit={{ scale: 0, opacity: 0 }}
-                                            onClick={() => setSearchQuery("")}
-                                            className={`mr-3 p-2 rounded-lg bg-neutral-800/50 ${getThemeColorClass('hover-bg')} hover:text-black transition-all duration-300 group/btn`}
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </motion.button>
-                                    )}
+                        {/* Brand Filter (Only if not on brand page) */}
+                        {!brand && (
+                            <div className="space-y-4">
+                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Marchio</label>
+                                <div className="space-y-2">
+                                    {availableBrands.map(b => (
+                                        <label key={b} className="flex items-center gap-3 cursor-pointer group">
+                                            <div className={`w-4 h-4 rounded border border-neutral-700 flex items-center justify-center transition-colors ${filters.selectedBrands.includes(b) ? getThemeColorClass('bg') + ' border-transparent' : 'group-hover:border-neutral-500'}`}>
+                                                {filters.selectedBrands.includes(b) && <div className="w-2 h-2 bg-black rounded-sm" />}
+                                            </div>
+                                            <span className={`text-sm font-medium ${filters.selectedBrands.includes(b) ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-300'}`}>{b}</span>
+                                            <input
+                                                type="checkbox"
+                                                className="hidden"
+                                                checked={filters.selectedBrands.includes(b)}
+                                                onChange={() => toggleBrand(b)}
+                                            />
+                                        </label>
+                                    ))}
                                 </div>
                             </div>
+                        )}
 
-                            {/* Main Filter Card - Glassmorphism Style */}
-                            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-neutral-900/80 to-neutral-950/80 backdrop-blur-xl border border-white/10 shadow-2xl">
-
-                                {/* Subtle gradient overlay */}
-                                <div className={`absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-${themeColor}-500/5 to-transparent pointer-events-none`} />
-
-                                <div className="relative p-7 space-y-8">
-
-                                    {/* Header with Reset Button */}
-                                    <div className="flex justify-between items-center pb-5 border-b border-white/10">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-lg ${getThemeColorClass('bg')}/10 border border-${themeColor}-500/20`}>
-                                                <SlidersHorizontal className={`w-4 h-4 ${getThemeColorClass('text')}`} />
-                                            </div>
-                                            <h3 className="text-base font-black text-white uppercase tracking-wide">
-                                                Filtri
-                                            </h3>
-                                        </div>
-                                        {(
-                                            filters.yearRange[0] !== bounds.year.min || filters.yearRange[1] !== bounds.year.max ||
-                                            filters.priceRange[0] !== bounds.price.min || filters.priceRange[1] !== bounds.price.max ||
-                                            filters.displacementRange[0] !== bounds.displacement.min || filters.displacementRange[1] !== bounds.displacement.max ||
-                                            filters.selectedBrands.length > 0
-                                        ) && (
-                                                <button
-                                                    onClick={clearFilters}
-                                                    className={`text-[10px] font-bold px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 ${getThemeColorClass('hover-bg')} hover:text-black hover:border-transparent uppercase tracking-wider transition-all duration-300 flex items-center gap-1.5`}
-                                                >
-                                                    <X className="w-3 h-3" /> Reset
-                                                </button>
-                                            )}
-                                    </div>
-
-                                    {/* Brand Filter (Only if not on brand page) */}
-                                    {!brand && (
-                                        <div className="space-y-4">
-                                            <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.15em]">Marchio</label>
-                                            <div className="grid gap-2.5">
-                                                {availableBrands.map(b => (
-                                                    <label
-                                                        key={b}
-                                                        className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-300 ${filters.selectedBrands.includes(b)
-                                                                ? `bg-${themeColor}-500/10 border border-${themeColor}-500/30`
-                                                                : 'bg-white/5 border border-transparent hover:bg-white/10 hover:border-white/10'
-                                                            }`}
-                                                    >
-                                                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${filters.selectedBrands.includes(b)
-                                                                ? getThemeColorClass('bg') + ' ' + getThemeColorClass('border') + ' shadow-lg'
-                                                                : 'border-neutral-700'
-                                                            }`}>
-                                                            {filters.selectedBrands.includes(b) && (
-                                                                <motion.svg
-                                                                    initial={{ scale: 0 }}
-                                                                    animate={{ scale: 1 }}
-                                                                    className="w-3 h-3 text-black"
-                                                                    fill="none"
-                                                                    viewBox="0 0 24 24"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth={3}
-                                                                >
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                                                </motion.svg>
-                                                            )}
-                                                        </div>
-                                                        <span className={`text-sm font-semibold transition-colors ${filters.selectedBrands.includes(b) ? 'text-white' : 'text-neutral-400'
-                                                            }`}>
-                                                            {b}
-                                                        </span>
-                                                        <input
-                                                            type="checkbox"
-                                                            className="hidden"
-                                                            checked={filters.selectedBrands.includes(b)}
-                                                            onChange={() => toggleBrand(b)}
-                                                        />
-                                                    </label>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Sliders Container */}
-                                    <div className="space-y-7">
-
-                                        {/* Year Slider */}
-                                        <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/5">
-                                            <div className="flex justify-between items-center">
-                                                <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.15em]">Anno</label>
-                                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-neutral-800 to-neutral-900 border ${getThemeColorClass('border')}/20`}>
-                                                    <span className={`text-xs font-bold ${getThemeColorClass('text')}`}>{filters.yearRange[0]}</span>
-                                                    <span className="text-neutral-600 font-bold">→</span>
-                                                    <span className={`text-xs font-bold ${getThemeColorClass('text')}`}>{filters.yearRange[1]}</span>
-                                                </div>
-                                            </div>
-                                            <div className="px-2 pt-2">
-                                                <RangeSlider
-                                                    min={bounds.year.min}
-                                                    max={bounds.year.max}
-                                                    value={filters.yearRange}
-                                                    onChange={(val) => handleFilterChange('yearRange', val)}
-                                                    color={themeColor}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {/* Price Slider */}
-                                        <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/5">
-                                            <div className="flex justify-between items-center">
-                                                <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.15em]">Prezzo</label>
-                                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-neutral-800 to-neutral-900 border ${getThemeColorClass('border')}/20`}>
-                                                    <span className={`text-xs font-bold ${getThemeColorClass('text')}`}>{formatPrice(filters.priceRange[0])}</span>
-                                                    <span className="text-neutral-600 font-bold">→</span>
-                                                    <span className={`text-xs font-bold ${getThemeColorClass('text')}`}>{formatPrice(filters.priceRange[1])}</span>
-                                                </div>
-                                            </div>
-                                            <div className="px-2 pt-2">
-                                                <RangeSlider
-                                                    min={bounds.price.min}
-                                                    max={bounds.price.max}
-                                                    step={100}
-                                                    value={filters.priceRange}
-                                                    onChange={(val) => handleFilterChange('priceRange', val)}
-                                                    color={themeColor}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {/* Displacement Slider */}
-                                        <div className="space-y-4 p-4 rounded-xl bg-white/5 border border-white/5">
-                                            <div className="flex justify-between items-center">
-                                                <label className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.15em]">Cilindrata</label>
-                                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-neutral-800 to-neutral-900 border ${getThemeColorClass('border')}/20`}>
-                                                    <span className={`text-xs font-bold ${getThemeColorClass('text')}`}>{filters.displacementRange[0]}cc</span>
-                                                    <span className="text-neutral-600 font-bold">→</span>
-                                                    <span className={`text-xs font-bold ${getThemeColorClass('text')}`}>{filters.displacementRange[1]}cc</span>
-                                                </div>
-                                            </div>
-                                            <div className="px-2 pt-2">
-                                                <RangeSlider
-                                                    min={bounds.displacement.min}
-                                                    max={bounds.displacement.max}
-                                                    step={50}
-                                                    value={filters.displacementRange}
-                                                    onChange={(val) => handleFilterChange('displacementRange', val)}
-                                                    color={themeColor}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Results Count - Redesigned */}
-                                    <div className={`mt-6 pt-6 border-t border-white/10 bg-gradient-to-br from-${themeColor}-500/10 to-transparent rounded-xl p-5 text-center`}>
-                                        <div className="flex items-center justify-center gap-3">
-                                            <div className={`w-2 h-2 rounded-full ${getThemeColorClass('bg')} animate-pulse`} />
-                                            <span className="text-3xl font-black text-white tracking-tight">{filteredMotorcycles.length}</span>
-                                            <span className="text-sm text-neutral-400 font-semibold uppercase tracking-wider">
-                                                {filteredMotorcycles.length === 1 ? 'Risultato' : 'Risultati'}
-                                            </span>
-                                        </div>
-                                    </div>
-
+                        {/* Year Slider */}
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-end">
+                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Anno</label>
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/5">
+                                    <span>{filters.yearRange[0]}</span>
+                                    <span className="text-neutral-600">-</span>
+                                    <span>{filters.yearRange[1]}</span>
                                 </div>
                             </div>
+                            <div className="px-1">
+                                <RangeSlider
+                                    min={bounds.year.min}
+                                    max={bounds.year.max}
+                                    value={filters.yearRange}
+                                    onChange={(val) => handleFilterChange('yearRange', val)}
+                                    color={themeColor}
+                                />
+                            </div>
+                        </div>
 
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        {/* Price Slider */}
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-end">
+                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Prezzo</label>
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/5">
+                                    <span>{formatPrice(filters.priceRange[0])}</span>
+                                    <span className="text-neutral-600">-</span>
+                                    <span>{formatPrice(filters.priceRange[1])}</span>
+                                </div>
+                            </div>
+                            <div className="px-1">
+                                <RangeSlider
+                                    min={bounds.price.min}
+                                    max={bounds.price.max}
+                                    step={100}
+                                    value={filters.priceRange}
+                                    onChange={(val) => handleFilterChange('priceRange', val)}
+                                    color={themeColor}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Displacement Slider */}
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-end">
+                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Cilindrata</label>
+                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/5">
+                                    <span>{filters.displacementRange[0]}cc</span>
+                                    <span className="text-neutral-600">-</span>
+                                    <span>{filters.displacementRange[1]}cc</span>
+                                </div>
+                            </div>
+                            <div className="px-1">
+                                <RangeSlider
+                                    min={bounds.displacement.min}
+                                    max={bounds.displacement.max}
+                                    step={50}
+                                    value={filters.displacementRange}
+                                    onChange={(val) => handleFilterChange('displacementRange', val)}
+                                    color={themeColor}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Results Count (Sidebar Footer) */}
+                        <div className="pt-6 border-t border-white/5 text-center">
+                            <strong className="text-xl text-white font-black tracking-tight">{filteredMotorcycles.length}</strong>
+                            <span className="text-sm text-neutral-500 font-medium ml-2">Risultati</span>
+                        </div>
+                    </div>
+                </div>
             </aside>
 
             {/* Main Content - Grid */}

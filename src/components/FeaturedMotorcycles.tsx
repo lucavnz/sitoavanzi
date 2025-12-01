@@ -66,6 +66,8 @@ export default function FeaturedMotorcycles() {
 
     useEffect(() => {
         const handleScroll = () => {
+            if (typeof window === 'undefined') return;
+
             // Only on mobile
             if (window.innerWidth >= 768) {
                 setActiveIndex(null);
@@ -92,13 +94,17 @@ export default function FeaturedMotorcycles() {
             setActiveIndex(closestIndex);
         };
 
-        window.addEventListener('scroll', handleScroll);
-        window.addEventListener('resize', handleScroll);
-        handleScroll(); // Initial check
+        if (typeof window !== 'undefined') {
+            window.addEventListener('scroll', handleScroll);
+            window.addEventListener('resize', handleScroll);
+            handleScroll(); // Initial check
+        }
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleScroll);
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('resize', handleScroll);
+            }
         };
     }, [motorcycles]);
 
