@@ -27,14 +27,21 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     // Fetch motorcycles to determine available brands for the Navbar
-    const motorcycles: Motorcycle[] = await getMotorcycles();
-
-    // Filter brands that have at least one NEW bike
-    const availableBrands = Array.from(new Set(
-        motorcycles
-            .filter((m) => !m.isUsed) // Only consider NEW bikes
-            .map((m) => m.brand)
-    ));
+    let availableBrands: string[] = [];
+    
+    try {
+        const motorcycles: Motorcycle[] = await getMotorcycles();
+        
+        // Filter brands that have at least one NEW bike
+        availableBrands = Array.from(new Set(
+            motorcycles
+                .filter((m) => !m.isUsed) // Only consider NEW bikes
+                .map((m) => m.brand)
+        ));
+    } catch (error) {
+        console.error('Failed to fetch motorcycles for navbar:', error);
+        // Continue with empty array, navbar will just not show "Altro" brands
+    }
 
     return (
         <html lang="en" suppressHydrationWarning>

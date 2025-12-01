@@ -89,15 +89,6 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
 
     const motorcycles: Motorcycle[] = await getMotorcycles();
 
-    // Check if there are any NEW motorcycles for this brand
-    const hasNewBikes = motorcycles.some(
-        (m) => m.brand.toLowerCase() === normalizedBrand && !m.isUsed
-    );
-
-    if (!hasNewBikes) {
-        notFound();
-    }
-
     const getThemeClasses = (color: string) => {
         const colorMap: Record<string, { bg: string; text: string; border: string; bgBlur: string }> = {
             orange: { bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-500', bgBlur: 'bg-orange-500/5' },
@@ -114,7 +105,7 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
     const themeClasses = getThemeClasses(theme.color);
 
     return (
-        <div className="min-h-screen bg-neutral-950 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-neutral-950 pt-40 pb-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 {/* Modern Header */}
                 <div className="relative mb-12 pt-8">

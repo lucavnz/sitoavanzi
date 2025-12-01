@@ -53,7 +53,7 @@ export default function MotorcycleCard({ moto, index, themeColor = "orange" }: {
             className="group h-full"
         >
             <Link href={`/catalogo/${moto.slug}`} className="block h-full">
-                <div className={`relative h-full bg-neutral-950 border border-neutral-800 border-l-2 border-l-${getColorClass('border').split('-')[1]}-${getColorClass('border').split('-')[2]}/50 overflow-hidden ${getColorClass('group-hover-border')} transition-all duration-500`}>
+                <div className={`relative h-full bg-[#0f0f0f] border border-neutral-800 border-l-2 border-l-${getColorClass('border').split('-')[1]}-${getColorClass('border').split('-')[2]}/50 overflow-hidden ${getColorClass('group-hover-border')} transition-all duration-500`}>
 
                     {/* Main Image */}
                     <div className="relative aspect-[4/3] overflow-hidden bg-black">
@@ -81,7 +81,7 @@ export default function MotorcycleCard({ moto, index, themeColor = "orange" }: {
                         </div>
 
                         {/* Bottom Gradient Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black via-black/80 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/80 to-transparent" />
 
                         {/* Brand & Title on Image */}
                         <div className="absolute bottom-0 left-0 right-0 p-5">

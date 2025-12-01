@@ -64,6 +64,12 @@ export const motorcycle = defineType({
             initialValue: false,
         }),
         defineField({
+            name: 'isFeatured',
+            title: 'In Evidenza (Homepage)',
+            type: 'boolean',
+            initialValue: false,
+        }),
+        defineField({
             name: 'kilometers',
             title: 'Chilometri',
             type: 'number',

@@ -194,7 +194,7 @@ export default function CatalogGrid({
 
                     {/* Search Bar - Clean Design */}
                     <div className="relative group">
-                        <div className="relative flex items-center bg-[#0a0a0a] border border-white/10 rounded-2xl p-1 transition-all duration-300 group-focus-within:border-neutral-700">
+                        <div className="relative flex items-center bg-[#0f0f0f] border border-white/10 rounded-2xl p-1 transition-all duration-300 group-focus-within:border-neutral-700">
                             <div className="p-3 bg-neutral-900 rounded-xl text-neutral-400 group-focus-within:text-white transition-colors">
                                 <Search className="w-5 h-5" />
                             </div>
@@ -217,7 +217,7 @@ export default function CatalogGrid({
                     </div>
 
                     {/* Filter Sections */}
-                    <div className="bg-[#0a0a0a] border border-white/5 rounded-3xl p-6 space-y-8 shadow-2xl">
+                    <div className="bg-[#0f0f0f] border border-white/5 rounded-3xl p-6 space-y-8 shadow-2xl">
 
                         {/* Header with Reset */}
                         <div className="flex justify-between items-center pb-4 border-b border-white/5">
@@ -347,7 +347,7 @@ export default function CatalogGrid({
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-32 bg-neutral-900/30 border border-neutral-800 border-dashed rounded-3xl">
-                        <div className="w-20 h-20 bg-neutral-900 rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/5">
+                        <div className="w-20 h-20 bg-neutral-800 rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/5">
                             <Search className="w-8 h-8 text-neutral-600" />
                         </div>
                         <p className="text-xl text-white font-bold mb-2">Nessun risultato trovato</p>
