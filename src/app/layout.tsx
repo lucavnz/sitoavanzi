@@ -40,7 +40,7 @@ export default async function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`${GeistSans.className} antialiased bg-neutral-950 text-white`}
+                className={`${GeistSans.className} antialiased bg-neutral-950 text-white overflow-x-hidden`}
             >
                 <Navbar availableBrands={availableBrands} />
                 {children}

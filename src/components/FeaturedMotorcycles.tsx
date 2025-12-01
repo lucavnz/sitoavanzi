@@ -127,7 +127,7 @@ export default function FeaturedMotorcycles() {
                                 <div className="h-px w-12 bg-orange-500/50" />
                             </div>
 
-                            <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter leading-[0.85]">
+                            <h2 className="text-4xl sm:text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-[0.85]">
                                 Moto in <br />
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-800 via-neutral-600 to-neutral-800 stroke-text">
                                     Evidenza

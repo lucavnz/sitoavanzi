@@ -1,7 +1,7 @@
 import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/lib/image";
 import Hero from "../components/Hero";
-import Services from "@/components/Services";
+
 import FeaturedMotorcycles from "@/components/FeaturedMotorcycles";
 import FeatureSections from "@/components/FeatureSections";
 
@@ -48,7 +48,7 @@ export default async function Home() {
             <Hero heroImageUrl={heroImageUrl} />
             <FeatureSections sections={featureSections} />
             <FeaturedMotorcycles />
-            <Services />
+
         </main>
     );
 }

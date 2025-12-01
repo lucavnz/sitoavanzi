@@ -2,7 +2,7 @@ import { client } from "@/sanity/client";
 import { urlFor } from "@/sanity/lib/image";
 import ImageSlider from "@/components/ImageSlider";
 import ConfiguratorForm from "@/components/ConfiguratorForm";
-import Services from "@/components/Services";
+
 import { Calendar, Gauge, Info, CheckCircle2 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import { notFound } from "next/navigation";
@@ -161,8 +161,7 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ slu
                 </div>
             </div>
 
-            {/* Services Section */}
-            <Services />
+
         </main>
     );
 }
