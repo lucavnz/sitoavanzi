@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import MotorcycleCard from "./MotorcycleCard";
 import { motion, AnimatePresence } from "framer-motion";
@@ -175,22 +175,55 @@ export default function CatalogGrid({
         return Array.from(brands).sort();
     }, [motorcycles]);
 
+    // Scroll spotlight tracking for mobile
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            // Only on mobile
+            if (window.innerWidth >= 768) {
+                setActiveIndex(null);
+                return;
+            }
+
+            const viewportCenter = window.innerHeight / 2;
+            let closestIndex = null;
+            let closestDistance = Infinity;
+
+            cardRefs.current.forEach((card, index) => {
+                if (!card) return;
+
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.top + rect.height / 2;
+                const distance = Math.abs(cardCenter - viewportCenter);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestIndex = index;
+                }
+            });
+
+            setActiveIndex(closestIndex);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', handleScroll);
+        handleScroll(); // Initial check
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleScroll);
+        };
+    }, [filteredMotorcycles]);
+
     return (
-        <div className="flex flex-col lg:flex-row gap-12 items-start">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-start">
             {/* Sidebar Filters - Desktop Sticky / Mobile Collapsible */}
             <aside className="w-full lg:w-[280px] lg:sticky lg:top-24 flex-shrink-0">
 
-                {/* Mobile Toggle Button */}
-                <button
-                    onClick={() => setShowFilters(!showFilters)}
-                    className={`lg:hidden w-full mb-6 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center gap-3 font-bold uppercase tracking-wider text-white ${getThemeColorClass('hover-bg')} hover:text-black transition-all duration-300 shadow-lg`}
-                >
-                    <SlidersHorizontal className="w-5 h-5" />
-                    <span>{showFilters ? "Nascondi Filtri" : "Filtra Moto"}</span>
-                </button>
-
                 {/* Filters Container */}
-                <div className={`${showFilters ? 'block' : 'hidden'} lg:block space-y-4`}>
+                <div className="block space-y-4">
 
                     {/* Search Bar - Clean Design */}
                     <div className="relative group">
@@ -342,7 +375,14 @@ export default function CatalogGrid({
                 {filteredMotorcycles.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                         {filteredMotorcycles.map((moto, index) => (
-                            <MotorcycleCard key={moto._id} moto={moto} index={index} themeColor={themeColor} />
+                            <MotorcycleCard
+                                key={moto._id}
+                                moto={moto}
+                                index={index}
+                                themeColor={themeColor}
+                                isActive={activeIndex === index}
+                                cardRef={(el: HTMLDivElement | null) => cardRefs.current[index] = el}
+                            />
                         ))}
                     </div>
                 ) : (

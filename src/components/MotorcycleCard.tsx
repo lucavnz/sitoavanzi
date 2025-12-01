@@ -22,8 +22,8 @@ type Motorcycle = {
     summary?: string;
 };
 
-export default function MotorcycleCard({ moto, index, themeColor = "orange" }: { moto: Motorcycle; index: number; themeColor?: string }) {
-    const getColorClass = (type: 'text' | 'bg' | 'border' | 'group-hover-border' | 'group-hover-text') => {
+export default function MotorcycleCard({ moto, index, themeColor = "orange", isActive = false, cardRef }: { moto: Motorcycle; index: number; themeColor?: string; isActive?: boolean; cardRef?: any }) {
+    const getColorClass = (type: 'text' | 'bg' | 'border' | 'group-hover-border' | 'group-hover-text' | 'border-accent') => {
         const colorMap: Record<string, string> = {
             orange: 'orange-500',
             blue: 'blue-500',
@@ -39,6 +39,7 @@ export default function MotorcycleCard({ moto, index, themeColor = "orange" }: {
             case 'text': return `text-${c}`;
             case 'bg': return `bg-${c}`;
             case 'border': return `border-${c}`;
+            case 'border-accent': return `border-${c}/50`;
             case 'group-hover-border': return `group-hover:border-${c}`;
             case 'group-hover-text': return `group-hover:text-${c}`;
             default: return '';
@@ -47,13 +48,17 @@ export default function MotorcycleCard({ moto, index, themeColor = "orange" }: {
 
     return (
         <motion.div
+            ref={cardRef}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: index * 0.1 }}
             className="group h-full"
         >
             <Link href={`/catalogo/${moto.slug}`} className="block h-full">
-                <div className={`relative h-full bg-[#0f0f0f] border border-neutral-800 border-l-2 border-l-${getColorClass('border').split('-')[1]}-${getColorClass('border').split('-')[2]}/50 overflow-hidden ${getColorClass('group-hover-border')} transition-all duration-500`}>
+                <div className={`relative h-full bg-[#0f0f0f] border overflow-hidden transition-all duration-500 ${isActive
+                        ? `${getColorClass('border')} md:border-neutral-800 md:${getColorClass('group-hover-border')}`
+                        : `border-neutral-800 ${getColorClass('group-hover-border')}`
+                    }`}>
 
                     {/* Main Image */}
                     <div className="relative aspect-[4/3] overflow-hidden bg-black">
@@ -62,7 +67,10 @@ export default function MotorcycleCard({ moto, index, themeColor = "orange" }: {
                                 src={moto.imageUrl}
                                 alt={moto.title}
                                 fill
-                                className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                                className={`object-cover transition-all duration-700 ${isActive
+                                        ? 'scale-105 brightness-110 md:scale-100 md:brightness-100 md:group-hover:scale-105 md:group-hover:brightness-110'
+                                        : 'group-hover:scale-105 group-hover:brightness-110'
+                                    }`}
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                         ) : (
@@ -88,7 +96,10 @@ export default function MotorcycleCard({ moto, index, themeColor = "orange" }: {
                             <div className={`${getColorClass('text')} text-[11px] font-black uppercase tracking-[0.2em] mb-1.5`}>
                                 {moto.brand}
                             </div>
-                            <h3 className={`text-xl font-black text-white uppercase tracking-tight leading-none mb-3 ${getColorClass('group-hover-text')} transition-colors`}>
+                            <h3 className={`text-xl font-black text-white uppercase tracking-tight leading-none mb-3 transition-colors ${isActive
+                                    ? `${getColorClass('text')} md:text-white md:${getColorClass('group-hover-text')}`
+                                    : getColorClass('group-hover-text')
+                                }`}>
                                 {moto.title}
                             </h3>
                         </div>
@@ -143,7 +154,8 @@ export default function MotorcycleCard({ moto, index, themeColor = "orange" }: {
                     </div>
 
                     {/* Hover Effect Bar */}
-                    <div className={`absolute bottom-0 left-0 right-0 h-1 ${getColorClass('bg')} transform scale-x-50 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
+                    <div className={`absolute bottom-0 left-0 right-0 h-1 ${getColorClass('bg')} transform transition-transform duration-500 origin-left ${isActive ? 'scale-x-100 md:scale-x-50 md:group-hover:scale-x-100' : 'scale-x-50 group-hover:scale-x-100'
+                        }`} />
                 </div>
             </Link>
         </motion.div>

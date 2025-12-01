@@ -108,11 +108,11 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
         <div className="min-h-screen bg-neutral-950 pt-40 pb-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 {/* Modern Header */}
-                <div className="relative mb-12 pt-8">
+                <div className="relative mb-6 lg:mb-12 pt-8">
                     {/* Decorative Background Elements */}
                     <div className={`absolute top-0 right-0 w-64 h-64 ${themeClasses.bgBlur} rounded-full blur-3xl -z-10`} />
 
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-neutral-800 pb-8">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                         <div className="relative">
                             {/* Small Overline */}
                             <div className="flex items-center gap-2 mb-2">
