@@ -225,82 +225,209 @@ export default function CatalogGrid({
 
     return (
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-start">
-            {/* Sidebar Filters - Desktop Sticky / Mobile Collapsible */}
-            <aside className="w-full lg:w-[280px] lg:sticky lg:top-24 flex-shrink-0">
+            {/* Mobile Filter Toggle */}
+            <button
+                onClick={() => setShowFilters(true)}
+                className="lg:hidden w-full py-3 bg-neutral-900 border border-white/10 text-white font-mono text-xs uppercase tracking-widest rounded-lg flex items-center justify-center gap-2 mb-6 transition-colors hover:bg-neutral-800"
+            >
+                <SlidersHorizontal className="w-4 h-4" />
+                Filtri e Cerca
+            </button>
 
-                {/* Mobile Toggle Button */}
-                <button
-                    onClick={() => setShowFilters(!showFilters)}
-                    className={`lg:hidden w-full py-4 border-b border-neutral-900 flex items-center justify-between text-white transition-colors group ${showFilters ? 'mb-6' : 'mb-2'}`}
-                >
-                    <span className="text-sm font-black uppercase tracking-tight text-neutral-400 group-hover:text-white transition-colors">
-                        {showFilters ? "Nascondi Filtri" : "Cerca la tua moto"}
-                    </span>
-                    <SlidersHorizontal className={`w-5 h-5 ${getThemeColorClass('text')} transition-transform ${showFilters ? 'rotate-90' : ''}`} />
-                </button>
-
-                {/* Filters Container */}
-                <div className={`${showFilters ? 'block' : 'hidden'} lg:block space-y-4`}>
-
-                    {/* Search Bar - Clean Design */}
-                    <div className="relative group">
-                        <div className="relative flex items-center bg-[#0f0f0f] border border-white/10 rounded-2xl p-1 transition-all duration-300 group-focus-within:border-neutral-700">
-                            <div className="p-3 bg-neutral-900 rounded-xl text-neutral-400 group-focus-within:text-white transition-colors">
-                                <Search className="w-5 h-5" />
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Cerca moto..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-transparent text-white px-3 py-2 focus:outline-none placeholder:text-neutral-600 font-medium"
+            {/* Mobile Drawer Overlay */}
+            <AnimatePresence>
+                {
+                    showFilters && (
+                        <>
+                            {/* Backdrop */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setShowFilters(false)}
+                                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
                             />
-                            {searchQuery && (
-                                <button
-                                    onClick={() => setSearchQuery("")}
-                                    className="p-2 text-neutral-600 hover:text-white transition-colors"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
-                            )}
-                        </div>
-                    </div>
 
-                    {/* Filter Sections */}
-                    <div className="bg-[#0f0f0f] border border-white/5 rounded-3xl p-6 space-y-8 shadow-2xl">
+                            {/* Drawer */}
+                            <motion.div
+                                initial={{ y: "100%" }}
+                                animate={{ y: 0 }}
+                                exit={{ y: "100%" }}
+                                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                                className="fixed bottom-0 left-0 right-0 bg-[#0f0f0f] border-t border-white/10 rounded-t-3xl z-50 lg:hidden max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl"
+                            >
+                                <div className="p-6 space-y-8">
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-lg font-mono font-bold text-white uppercase tracking-wider">Filtri</h3>
+                                        <button
+                                            onClick={() => setShowFilters(false)}
+                                            className="p-2 text-neutral-400 hover:text-white transition-colors"
+                                        >
+                                            <X className="w-5 h-5" />
+                                        </button>
+                                    </div>
 
-                        {/* Header with Reset */}
-                        <div className="flex justify-between items-center pb-4 border-b border-white/5">
-                            <h3 className="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
-                                <SlidersHorizontal className={`w-4 h-4 ${getThemeColorClass('text')}`} />
-                                Filtri
-                            </h3>
-                            {(
-                                filters.yearRange[0] !== bounds.year.min || filters.yearRange[1] !== bounds.year.max ||
-                                filters.priceRange[0] !== bounds.price.min || filters.priceRange[1] !== bounds.price.max ||
-                                filters.displacementRange[0] !== bounds.displacement.min || filters.displacementRange[1] !== bounds.displacement.max ||
-                                filters.selectedBrands.length > 0
-                            ) && (
+                                    {/* Mobile Filter Content - Reusing the same structure as desktop but in drawer */}
+                                    <div className="space-y-8">
+                                        {/* Search */}
+                                        <div className="relative">
+                                            <div className="relative flex items-center bg-neutral-900 border border-neutral-800 rounded-xl p-1.5 transition-all focus-within:border-neutral-700 focus-within:shadow-lg focus-within:shadow-black/50">
+                                                <div className="p-2 text-neutral-500">
+                                                    <Search className="w-5 h-5" />
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Cerca moto..."
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                    className="w-full bg-transparent text-white text-sm font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600"
+                                                />
+                                                {searchQuery && (
+                                                    <button
+                                                        onClick={() => setSearchQuery("")}
+                                                        className="p-2 text-neutral-600 hover:text-white transition-colors"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Filters */}
+                                        <div className="space-y-8">
+                                            {/* Brand Filter (Mobile) */}
+                                            {!brand && (
+                                                <div className="space-y-4">
+                                                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Marchio</label>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {availableBrands.map(b => (
+                                                            <button
+                                                                key={b}
+                                                                onClick={() => toggleBrand(b)}
+                                                                className={`px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-wide border transition-all ${filters.selectedBrands.includes(b)
+                                                                    ? `${getThemeColorClass('bg')} border-transparent text-white`
+                                                                    : 'bg-neutral-900 border-neutral-800 text-neutral-400'
+                                                                    }`}
+                                                            >
+                                                                {b}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Year Slider */}
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between items-center">
+                                                    <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-wider">Anno</label>
+                                                    <div className="text-xs font-mono font-medium text-white bg-neutral-900 px-2 py-1 rounded border border-neutral-800">
+                                                        {filters.yearRange[0]} - {filters.yearRange[1]}
+                                                    </div>
+                                                </div>
+                                                <RangeSlider
+                                                    min={bounds.year.min}
+                                                    max={bounds.year.max}
+                                                    value={filters.yearRange}
+                                                    onChange={(val) => handleFilterChange('yearRange', val)}
+                                                    color={themeColor}
+                                                />
+                                            </div>
+
+                                            {/* Price Slider */}
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between items-center">
+                                                    <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-wider">Prezzo</label>
+                                                    <div className="text-xs font-mono font-medium text-white bg-neutral-900 px-2 py-1 rounded border border-neutral-800">
+                                                        {formatPrice(filters.priceRange[0])} - {formatPrice(filters.priceRange[1])}
+                                                    </div>
+                                                </div>
+                                                <RangeSlider
+                                                    min={bounds.price.min}
+                                                    max={bounds.price.max}
+                                                    step={100}
+                                                    value={filters.priceRange}
+                                                    onChange={(val) => handleFilterChange('priceRange', val)}
+                                                    color={themeColor}
+                                                />
+                                            </div>
+
+                                            {/* Displacement Slider */}
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between items-center">
+                                                    <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-wider">Cilindrata</label>
+                                                    <div className="text-xs font-mono font-medium text-white bg-neutral-900 px-2 py-1 rounded border border-neutral-800">
+                                                        {filters.displacementRange[0]}cc - {filters.displacementRange[1]}cc
+                                                    </div>
+                                                </div>
+                                                <RangeSlider
+                                                    min={bounds.displacement.min}
+                                                    max={bounds.displacement.max}
+                                                    step={50}
+                                                    value={filters.displacementRange}
+                                                    onChange={(val) => handleFilterChange('displacementRange', val)}
+                                                    color={themeColor}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Drawer Footer */}
+                                <div className="p-6 border-t border-white/10 bg-neutral-900/50 mt-auto sticky bottom-0">
                                     <button
-                                        onClick={clearFilters}
-                                        className={`text-[10px] font-bold text-neutral-500 ${getThemeColorClass('hover-text')} uppercase tracking-wider transition-colors flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md hover:bg-white/10`}
+                                        onClick={() => setShowFilters(false)}
+                                        className="w-full py-3 bg-white text-black font-mono text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-neutral-200 transition-colors"
                                     >
-                                        <X className="w-3 h-3" /> Reset
+                                        Vedi {filteredMotorcycles.length} Risultati
                                     </button>
-                                )}
-                        </div>
+                                </div>
+                            </motion.div>
+                        </>
+                    )
+                }
+            </AnimatePresence >
 
-                        {/* Brand Filter (Only if not on brand page) */}
+            {/* Desktop Sidebar - Sticky */}
+            < aside className="hidden lg:block w-[300px] sticky top-32 flex-shrink-0" >
+                {/* Search - Moved Outside */}
+                < div className="mb-4 relative" >
+                    <div className="relative flex items-center bg-neutral-900 border border-neutral-800 rounded-xl p-1.5 transition-all focus-within:border-neutral-700 focus-within:shadow-lg focus-within:shadow-black/50">
+                        <div className="p-2 text-neutral-500">
+                            <Search className="w-5 h-5" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Cerca moto..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-transparent text-white text-sm font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery("")}
+                                className="p-2 text-neutral-600 hover:text-white transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        )}
+                    </div>
+                </div >
+
+                <div className="bg-[#0f0f0f] border border-white/5 rounded-xl p-6 space-y-4 shadow-2xl backdrop-blur-xl">
+
+                    {/* Filters Content */}
+                    <div className="space-y-8">
+                        {/* Brand Filter (Desktop) */}
                         {!brand && (
                             <div className="space-y-4">
-                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Marchio</label>
+                                <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Marchio</label>
                                 <div className="space-y-2">
                                     {availableBrands.map(b => (
                                         <label key={b} className="flex items-center gap-3 cursor-pointer group">
-                                            <div className={`w-4 h-4 rounded border border-neutral-700 flex items-center justify-center transition-colors ${filters.selectedBrands.includes(b) ? getThemeColorClass('bg') + ' border-transparent' : 'group-hover:border-neutral-500'}`}>
-                                                {filters.selectedBrands.includes(b) && <div className="w-2 h-2 bg-black rounded-sm" />}
+                                            <div className={`w-4 h-4 rounded border border-neutral-800 flex items-center justify-center transition-all ${filters.selectedBrands.includes(b) ? getThemeColorClass('bg') + ' border-transparent' : 'group-hover:border-neutral-600'}`}>
+                                                {filters.selectedBrands.includes(b) && <div className="w-1.5 h-1.5 bg-black rounded-[1px]" />}
                                             </div>
-                                            <span className={`text-sm font-medium ${filters.selectedBrands.includes(b) ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-300'}`}>{b}</span>
+                                            <span className={`text-sm font-medium transition-colors ${filters.selectedBrands.includes(b) ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-300'}`}>{b}</span>
                                             <input
                                                 type="checkbox"
                                                 className="hidden"
@@ -314,110 +441,101 @@ export default function CatalogGrid({
                         )}
 
                         {/* Year Slider */}
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Anno</label>
-                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/5">
-                                    <span>{filters.yearRange[0]}</span>
-                                    <span className="text-neutral-600">-</span>
-                                    <span>{filters.yearRange[1]}</span>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-wider">Anno</label>
+                                <div className="text-xs font-mono font-medium text-white bg-neutral-900 px-2 py-1 rounded border border-neutral-800">
+                                    {filters.yearRange[0]} - {filters.yearRange[1]}
                                 </div>
                             </div>
-                            <div className="px-1">
-                                <RangeSlider
-                                    min={bounds.year.min}
-                                    max={bounds.year.max}
-                                    value={filters.yearRange}
-                                    onChange={(val) => handleFilterChange('yearRange', val)}
-                                    color={themeColor}
-                                />
-                            </div>
+                            <RangeSlider
+                                min={bounds.year.min}
+                                max={bounds.year.max}
+                                value={filters.yearRange}
+                                onChange={(val) => handleFilterChange('yearRange', val)}
+                                color={themeColor}
+                            />
                         </div>
 
                         {/* Price Slider */}
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Prezzo</label>
-                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/5">
-                                    <span>{formatPrice(filters.priceRange[0])}</span>
-                                    <span className="text-neutral-600">-</span>
-                                    <span>{formatPrice(filters.priceRange[1])}</span>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-wider">Prezzo</label>
+                                <div className="text-xs font-mono font-medium text-white bg-neutral-900 px-2 py-1 rounded border border-neutral-800">
+                                    {formatPrice(filters.priceRange[0])} - {formatPrice(filters.priceRange[1])}
                                 </div>
                             </div>
-                            <div className="px-1">
-                                <RangeSlider
-                                    min={bounds.price.min}
-                                    max={bounds.price.max}
-                                    step={100}
-                                    value={filters.priceRange}
-                                    onChange={(val) => handleFilterChange('priceRange', val)}
-                                    color={themeColor}
-                                />
-                            </div>
+                            <RangeSlider
+                                min={bounds.price.min}
+                                max={bounds.price.max}
+                                step={100}
+                                value={filters.priceRange}
+                                onChange={(val) => handleFilterChange('priceRange', val)}
+                                color={themeColor}
+                            />
                         </div>
 
                         {/* Displacement Slider */}
-                        <div className="space-y-4">
-                            <div className="flex justify-between items-end">
-                                <label className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">Cilindrata</label>
-                                <div className="flex items-center gap-2 text-xs font-mono font-bold text-white bg-white/5 px-2 py-1 rounded border border-white/5">
-                                    <span>{filters.displacementRange[0]}cc</span>
-                                    <span className="text-neutral-600">-</span>
-                                    <span>{filters.displacementRange[1]}cc</span>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                                <label className="text-xs font-mono font-bold text-neutral-400 uppercase tracking-wider">Cilindrata</label>
+                                <div className="text-xs font-mono font-medium text-white bg-neutral-900 px-2 py-1 rounded border border-neutral-800">
+                                    {filters.displacementRange[0]}cc - {filters.displacementRange[1]}cc
                                 </div>
                             </div>
-                            <div className="px-1">
-                                <RangeSlider
-                                    min={bounds.displacement.min}
-                                    max={bounds.displacement.max}
-                                    step={50}
-                                    value={filters.displacementRange}
-                                    onChange={(val) => handleFilterChange('displacementRange', val)}
-                                    color={themeColor}
-                                />
-                            </div>
+                            <RangeSlider
+                                min={bounds.displacement.min}
+                                max={bounds.displacement.max}
+                                step={50}
+                                value={filters.displacementRange}
+                                onChange={(val) => handleFilterChange('displacementRange', val)}
+                                color={themeColor}
+                            />
                         </div>
+                    </div>
 
-                        {/* Results Count (Sidebar Footer) */}
-                        <div className="pt-6 border-t border-white/5 text-center">
-                            <strong className="text-xl text-white font-black tracking-tight">{filteredMotorcycles.length}</strong>
-                            <span className="text-sm text-neutral-500 font-medium ml-2">Risultati</span>
-                        </div>
+                    {/* Results Count */}
+                    <div className="pt-4 border-t border-white/10 text-center">
+                        <span className="text-neutral-400 font-mono text-xs uppercase tracking-wider">
+                            {filteredMotorcycles.length} Risultati trovati
+                        </span>
                     </div>
                 </div>
-            </aside>
+            </aside >
 
             {/* Main Content - Grid */}
-            <main className="flex-1 w-full">
-                {filteredMotorcycles.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                        {filteredMotorcycles.map((moto, index) => (
-                            <MotorcycleCard
-                                key={moto._id}
-                                moto={moto}
-                                index={index}
-                                themeColor={themeColor}
-                                isActive={activeIndex === index}
-                                cardRef={(el: HTMLDivElement | null) => cardRefs.current[index] = el}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center justify-center py-32 bg-neutral-900/30 border border-neutral-800 border-dashed rounded-3xl">
-                        <div className="w-20 h-20 bg-neutral-800 rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/5">
-                            <Search className="w-8 h-8 text-neutral-600" />
+            < main className="flex-1 w-full" >
+                {
+                    filteredMotorcycles.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                            {filteredMotorcycles.map((moto, index) => (
+                                <MotorcycleCard
+                                    key={moto._id}
+                                    moto={moto}
+                                    index={index}
+                                    themeColor={themeColor}
+                                    isActive={activeIndex === index}
+                                    cardRef={(el: HTMLDivElement | null) => cardRefs.current[index] = el}
+                                />
+                            ))}
                         </div>
-                        <p className="text-xl text-white font-bold mb-2">Nessun risultato trovato</p>
-                        <p className="text-sm text-neutral-500 mb-8">Prova a modificare i filtri di ricerca</p>
-                        <button
-                            onClick={clearFilters}
-                            className={`px-8 py-3 ${getThemeColorClass('bg')} text-black font-bold uppercase tracking-wider rounded-xl hover:opacity-90 transition-all shadow-lg`}
-                        >
-                            Resetta Filtri
-                        </button>
-                    </div>
-                )}
-            </main>
-        </div>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-32 bg-neutral-900/30 border border-neutral-800 border-dashed rounded-3xl">
+                            <div className="w-20 h-20 bg-neutral-800 rounded-full flex items-center justify-center mb-6 shadow-xl border border-white/5">
+                                <Search className="w-8 h-8 text-neutral-600" />
+                            </div>
+                            <p className="text-xl text-white font-bold mb-2">Nessun risultato trovato</p>
+                            <p className="text-sm text-neutral-500 mb-8">Prova a modificare i filtri di ricerca</p>
+                            <button
+                                onClick={clearFilters}
+                                className={`px-8 py-3 ${getThemeColorClass('bg')} text-black font-bold uppercase tracking-wider rounded-xl hover:opacity-90 transition-all shadow-lg`}
+                            >
+                                Resetta Filtri
+                            </button>
+                        </div>
+                    )
+                }
+            </main >
+        </div >
     );
 }

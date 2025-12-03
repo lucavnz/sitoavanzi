@@ -115,28 +115,24 @@ export default function RangeSlider({
             />
 
             {/* Visual Track Container */}
-            <div className="relative w-full h-1.5 bg-neutral-800 rounded-full overflow-visible group">
+            <div className="relative w-full h-1 bg-neutral-800 rounded-full overflow-visible group">
                 {/* Active Range Track */}
                 <div
                     ref={range}
-                    className={`absolute h-full ${getColorClass('bg')} rounded-full z-20 shadow-[0_0_10px_rgba(0,0,0,0.3)]`}
+                    className={`absolute h-full ${getColorClass('bg')} rounded-full z-20`}
                 />
 
                 {/* Left Thumb Visual */}
                 <div
-                    className={`absolute h-4 w-4 bg-white rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-30 top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out`}
+                    className={`absolute h-4 w-4 ${getColorClass('bg')} rounded-full z-30 top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out`}
                     style={{ left: `${getPercent(minVal)}%` }}
-                >
-                    <div className={`absolute inset-0 rounded-full border-2 ${getColorClass('border')}`} />
-                </div>
+                />
 
                 {/* Right Thumb Visual */}
                 <div
-                    className={`absolute h-4 w-4 bg-white rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-30 top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out`}
+                    className={`absolute h-4 w-4 ${getColorClass('bg')} rounded-full z-30 top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-transform duration-100 ease-out`}
                     style={{ left: `${getPercent(maxVal)}%` }}
-                >
-                    <div className={`absolute inset-0 rounded-full border-2 ${getColorClass('border')}`} />
-                </div>
+                />
             </div>
 
             <style jsx>{`
