@@ -269,7 +269,7 @@ export default function CatalogGrid({
                                 className="fixed bottom-0 left-0 right-0 bg-[#0f0f0f] border-t border-white/10 rounded-t-3xl z-50 lg:hidden max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl"
                             >
                                 <div className="p-4 space-y-5">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between pl-2">
                                         <h3 className="text-lg font-mono font-bold text-white uppercase tracking-wider">Filtri</h3>
                                         <button
                                             onClick={() => setShowFilters(false)}
@@ -292,7 +292,7 @@ export default function CatalogGrid({
                                                     placeholder="Cerca moto..."
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                                    className="w-full bg-transparent text-white text-sm font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600 placeholder:font-mono placeholder:uppercase placeholder:tracking-wider placeholder:font-bold"
+                                                    className="w-full bg-transparent text-white text-base font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600 placeholder:font-mono placeholder:uppercase placeholder:tracking-wider placeholder:font-bold"
                                                 />
                                                 {searchQuery && (
                                                     <button
@@ -306,7 +306,7 @@ export default function CatalogGrid({
                                         </div>
 
                                         {/* Filters */}
-                                        <div className="space-y-8">
+                                        <div className="space-y-8 px-4">
                                             {/* Brand Filter (Mobile) */}
                                             {!brand && (
                                                 <div className="space-y-4">

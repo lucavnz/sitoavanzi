@@ -164,7 +164,7 @@ export default async function BrandPage({ params }: { params: Promise<{ brand: s
         <div className="min-h-screen bg-neutral-950 pt-40 pb-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 {/* Modern Header */}
-                <div className="relative mb-12">
+                <div className="relative mb-8.5">
                     <div className="relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-8 pt-10">
                         <div className="max-w-4xl">
                             <div className="flex items-center gap-3 mb-6">
