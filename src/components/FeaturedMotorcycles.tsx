@@ -177,7 +177,7 @@ export default function FeaturedMotorcycles() {
                     </div>
 
                     {/* Background decorative gradient */}
-                    <div className="absolute -top-20 -left-20 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -223,6 +223,18 @@ export default function CatalogGrid({
         };
     }, [filteredMotorcycles]);
 
+    // Prevent body scroll when filters are open (mobile)
+    useEffect(() => {
+        if (showFilters) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [showFilters]);
+
     return (
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-start">
             {/* Mobile Filter Toggle */}
@@ -256,7 +268,7 @@ export default function CatalogGrid({
                                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
                                 className="fixed bottom-0 left-0 right-0 bg-[#0f0f0f] border-t border-white/10 rounded-t-3xl z-50 lg:hidden max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl"
                             >
-                                <div className="p-6 space-y-8">
+                                <div className="p-4 space-y-5">
                                     <div className="flex items-center justify-between">
                                         <h3 className="text-lg font-mono font-bold text-white uppercase tracking-wider">Filtri</h3>
                                         <button
@@ -280,7 +292,7 @@ export default function CatalogGrid({
                                                     placeholder="Cerca moto..."
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                                    className="w-full bg-transparent text-white text-sm font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600"
+                                                    className="w-full bg-transparent text-white text-sm font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600 placeholder:font-mono placeholder:uppercase placeholder:tracking-wider placeholder:font-bold"
                                                 />
                                                 {searchQuery && (
                                                     <button
@@ -400,7 +412,7 @@ export default function CatalogGrid({
                             placeholder="Cerca moto..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-transparent text-white text-sm font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600"
+                            className="w-full bg-transparent text-white text-sm font-medium px-1 py-2 focus:outline-none placeholder:text-neutral-600 placeholder:font-mono placeholder:uppercase placeholder:tracking-wider placeholder:font-bold"
                         />
                         {searchQuery && (
                             <button
