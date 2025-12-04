@@ -67,16 +67,19 @@ export default async function MotorcyclePage({ params }: { params: Promise<{ slu
                         {motorcycle.title}
                     </h1>
                     <p className="text-neutral-400 text-lg leading-relaxed">
-                        Avanzi Moto - Concessionario di moto nuove e usate a Bagnolo Mella, BRESCIA.
+                        {motorcycle.summary}
                     </p>
+                </div>
+
+                {/* Image Slider - Full Width */}
+                <div className="mb-12">
+                    <ImageSlider images={motorcycle.images} title={motorcycle.title} />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
-                    {/* Left Column: Images & Info */}
+                    {/* Left Column: Info & Description */}
                     <div className="lg:col-span-7 space-y-6">
-                        {/* Image Slider */}
-                        <ImageSlider images={motorcycle.images} title={motorcycle.title} />
 
                         {/* Price Section - Minimal & Elegant */}
                         <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 p-10 text-center group hover:border-${brandColor}-${shade}/30 transition-all duration-500`}>
